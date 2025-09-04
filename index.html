@@ -173,6 +173,10 @@
     #submit-user-guess:hover {
       background: #16a085;
     }
+    /* Hide the game screen initially */
+    #game-screen {
+      display: none;
+    }
   </style>
 </head>
 <body>
@@ -228,7 +232,6 @@
       // Enable "Start Game" when a category is selected
       categoryButtons.forEach(button => {
         button.addEventListener('click', () => {
-          // Instead of highlighting the category, just store the selection
           selectedCategory = button.getAttribute('data-category');
           startButton.disabled = false;
         });
@@ -239,36 +242,29 @@
         startScreen.classList.add('hidden');
         gameScreen.classList.remove('hidden');
         messageDisplay.textContent = `You've selected the "${selectedCategory}" category! Let's start the game!`;
-
-        // Here, you can add your dynamic questions and game flow based on the selected category
-        // For now, we'll start with a basic interaction for testing purposes
         askQuestion();
       });
 
-      // Function to handle a random question (this is an example, you'll replace it with dynamic question logic)
       function askQuestion() {
-        messageDisplay.textContent = "Is it a living thing?";  // Example question
+        messageDisplay.textContent = "Is it a living thing?";
         answerButtons.forEach(button => {
           button.classList.remove('disabled');
           button.addEventListener('click', handleAnswer);
         });
       }
 
-      // Function to handle answer selection
       function handleAnswer(e) {
         const answer = e.target.getAttribute('data-answer');
         messageDisplay.textContent = `You answered: ${answer}`;
-        answerButtons.forEach(button => button.classList.add('disabled'));  // Disable buttons after an answer
+        answerButtons.forEach(button => button.classList.add('disabled')); 
         nextRoundButton.classList.remove('hidden');
       }
 
-      // Play again
       nextRoundButton.addEventListener('click', () => {
         nextRoundButton.classList.add('hidden');
         askQuestion();
       });
 
-      // Handle user input if the game fails
       submitUserGuessButton.addEventListener('click', () => {
         const userGuess = userGuessInput.value;
         if (userGuess.trim()) {
