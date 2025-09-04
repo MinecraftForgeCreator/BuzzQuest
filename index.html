@@ -3,12 +3,13 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>FunFlicks - The Ultimate Guessing Game</title>
+<title>BuzzQuest - The Ultimate Guessing Game</title>
 <style>
+  /* Base */
   body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, #fceabb, #f8b500);
-    color: #222;
+    background: linear-gradient(135deg, #2c3e50, #4ca1af);
+    color: #f0f4f8;
     margin: 0; padding: 0;
     display: flex;
     justify-content: center;
@@ -17,87 +18,105 @@
     padding: 20px;
   }
   #app {
-    background: white;
+    background: #1b2733;
     border-radius: 16px;
-    box-shadow: 0 6px 25px rgba(0,0,0,0.12);
+    box-shadow: 0 6px 25px rgba(0,0,0,0.5);
     width: 100%;
     max-width: 480px;
     padding: 25px 35px;
     user-select: none;
   }
   h1 {
-    color: #ff6f00;
-    margin-bottom: 15px;
+    color: #1abc9c;
+    margin-bottom: 20px;
     text-align: center;
     font-weight: 700;
-    letter-spacing: 2px;
+    letter-spacing: 3px;
+    font-size: 2.8rem;
   }
-  label {
-    font-weight: 600;
-    display: block;
-    margin-bottom: 6px;
-  }
-  select, button {
-    width: 100%;
-    padding: 12px 15px;
-    margin-top: 10px;
-    font-size: 18px;
-    border-radius: 8px;
-    border: 2px solid #ff6f00;
-    background: white;
-    color: #ff6f00;
-    cursor: pointer;
-    font-weight: 700;
-    transition: all 0.3s ease;
-    box-sizing: border-box;
-  }
-  select:focus, button:focus {
-    outline: none;
-    background: #ffe5b4;
-  }
-  button:hover:not(.disabled) {
-    background: #ff6f00;
-    color: white;
-  }
-  button.disabled {
-    cursor: default;
-    background: #ccc;
-    border-color: #ccc;
-    color: #666;
-  }
-  .message {
-    margin: 25px 0;
-    font-size: 20px;
-    min-height: 70px;
-    text-align: center;
-    font-weight: 600;
-    line-height: 1.3;
-  }
-  .answers {
+  .category-buttons {
     display: flex;
-    justify-content: space-around;
-    margin-top: 15px;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: center;
+    margin-bottom: 25px;
   }
-  .answer-btn {
-    background: #ff6f00;
-    color: white;
+  .category-btn {
+    background: #16a085;
     border: none;
-    padding: 14px 30px;
+    color: #e0f7f1;
+    padding: 14px 24px;
     border-radius: 12px;
-    font-size: 18px;
-    cursor: pointer;
-    flex: 1;
-    margin: 0 7px;
     font-weight: 700;
+    font-size: 16px;
+    cursor: pointer;
+    flex: 1 1 40%;
+    max-width: 140px;
     transition: background 0.3s ease;
     user-select: none;
   }
-  .answer-btn:hover {
-    background: #e55d00;
+  .category-btn:hover {
+    background: #1abc9c;
+  }
+  .category-btn.selected {
+    background: #0e6655;
+    box-shadow: 0 0 12px #1abc9caa;
+  }
+  #start-btn {
+    width: 100%;
+    background: #1abc9c;
+    color: #0e6655;
+    font-weight: 700;
+    padding: 14px;
+    font-size: 20px;
+    border-radius: 12px;
+    border: none;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+  #start-btn:disabled {
+    background: #145b4b;
+    cursor: not-allowed;
+    color: #7dcbc4;
+  }
+  #start-btn:hover:not(:disabled) {
+    background: #16a085;
+  }
+  #message {
+    font-size: 20px;
+    font-weight: 600;
+    text-align: center;
+    min-height: 70px;
+    margin: 20px 0 12px;
+  }
+  .answers {
+    display: flex;
+    justify-content: center;
+    gap: 14px;
+    margin-top: 15px;
+    flex-wrap: wrap;
+  }
+  .answer-btn {
+    background: #1abc9c;
+    color: #0e6655;
+    border: none;
+    padding: 14px 28px;
+    border-radius: 14px;
+    font-size: 18px;
+    cursor: pointer;
+    font-weight: 700;
+    transition: background 0.3s ease;
+    user-select: none;
+    flex: 1 1 30%;
+    max-width: 140px;
+  }
+  .answer-btn:hover:not(.disabled) {
+    background: #16a085;
   }
   .answer-btn.disabled {
-    background: #ccc;
+    background: #145b4b;
     cursor: default;
+    color: #7dcbc4;
   }
   #guess-section {
     margin-top: 30px;
@@ -108,42 +127,87 @@
   }
   #next-round-btn {
     margin-top: 25px;
+    width: 100%;
+    background: #e74c3c;
+    color: white;
+    border: none;
+    padding: 14px;
+    border-radius: 12px;
+    font-size: 20px;
+    cursor: pointer;
+    font-weight: 700;
+    transition: background 0.3s ease;
+  }
+  #next-round-btn:hover {
+    background: #c0392b;
   }
   .scoreboard {
     margin-top: 18px;
     text-align: center;
     font-weight: 700;
     font-size: 18px;
-    color: #ff6f00;
+    color: #1abc9c;
+  }
+  #user-input-section {
+    margin-top: 20px;
+    text-align: center;
+  }
+  #user-guess-input {
+    width: 100%;
+    padding: 12px 15px;
+    border-radius: 10px;
+    border: 2px solid #1abc9c;
+    font-size: 18px;
+    font-weight: 600;
+    box-sizing: border-box;
+  }
+  #submit-user-guess {
+    margin-top: 12px;
+    background: #1abc9c;
+    color: #0e6655;
+    border: none;
+    padding: 12px 20px;
+    font-weight: 700;
+    font-size: 18px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+  #submit-user-guess:hover {
+    background: #16a085;
   }
 </style>
 </head>
 <body>
-  <div id="app">
-    <h1>FunFlicks</h1>
-    <div id="start-screen">
-      <label for="category-select">Choose a category:</label>
-      <select id="category-select" aria-label="Category select">
-        <option value="">-- Select Category --</option>
-        <option value="Songs">Songs</option>
-        <option value="Movies">Movies</option>
-        <option value="Games">Games</option>
-        <option value="Characters">Characters</option>
-        <option value="Animals">Animals</option>
-        <option value="Places">Places</option>
-        <option value="Objects">Objects</option>
-      </select>
-      <button id="start-btn" aria-label="Start Game">Start Game</button>
+  <div id="app" role="main" aria-label="BuzzQuest guessing game">
+    <h1>BuzzQuest</h1>
+    <div id="start-screen" aria-label="Select category and start game">
+      <div class="category-buttons" role="list" aria-label="Game categories">
+        <button class="category-btn" data-category="Characters" role="listitem" aria-pressed="false">Characters</button>
+        <button class="category-btn" data-category="Animals" role="listitem" aria-pressed="false">Animals</button>
+        <button class="category-btn" data-category="Objects" role="listitem" aria-pressed="false">Objects</button>
+        <button class="category-btn" data-category="Places" role="listitem" aria-pressed="false">Places</button>
+        <button class="category-btn" data-category="Games" role="listitem" aria-pressed="false">Games</button>
+        <button class="category-btn" data-category="Movies" role="listitem" aria-pressed="false">Movies</button>
+        <button class="category-btn" data-category="Songs" role="listitem" aria-pressed="false">Songs</button>
+      </div>
+      <button id="start-btn" aria-disabled="true" disabled>Start Game</button>
     </div>
 
-    <div id="game-screen" class="hidden" role="main" aria-live="polite" aria-atomic="true">
-      <p id="message" class="message"></p>
+    <div id="game-screen" class="hidden" aria-live="polite" aria-atomic="true">
+      <p id="message"></p>
       <div class="answers" role="group" aria-label="Answer options">
         <button class="answer-btn" data-answer="yes" aria-pressed="false">Yes</button>
         <button class="answer-btn" data-answer="no" aria-pressed="false">No</button>
         <button class="answer-btn" data-answer="idk" aria-pressed="false">Don't Know</button>
       </div>
       <div id="guess-section" role="region" aria-live="polite" aria-atomic="true"></div>
+
+      <div id="user-input-section" class="hidden" aria-label="Input your answer if game failed">
+        <input type="text" id="user-guess-input" placeholder="What were you thinking of?" aria-label="User guess input" />
+        <button id="submit-user-guess">Submit</button>
+      </div>
+
       <button id="next-round-btn" class="hidden" aria-label="Play Again">Play Again</button>
       <div class="scoreboard" aria-live="polite" aria-atomic="true"></div>
     </div>
@@ -151,205 +215,10 @@
 
 <script>
 (() => {
-  const categorySelect = document.getElementById('category-select');
-  const startBtn = document.getElementById('start-btn');
-  const startScreen = document.getElementById('start-screen');
-  const gameScreen = document.getElementById('game-screen');
-  const messageEl = document.getElementById('message');
-  const answerButtons = document.querySelectorAll('.answer-btn');
-  const guessSection = document.getElementById('guess-section');
-  const nextRoundBtn = document.getElementById('next-round-btn');
-  const scoreboard = document.querySelector('.scoreboard');
+  const categories = ['Characters', 'Animals', 'Objects', 'Places', 'Games', 'Movies', 'Songs'];
 
-  const questionsDB = {
-    Songs: [
-      'Is the song in English?',
-      'Is it a pop song?',
-      'Is it older than 10 years?',
-      'Is it performed by a solo artist?',
-      'Is it a romantic song?'
-    ],
-    Movies: [
-      'Is it animated?',
-      'Was it released in the last 10 years?',
-      'Is it a comedy?',
-      'Is it a superhero movie?',
-      'Is it based on a book or comic?'
-    ],
-    Games: [
-      'Is it played on consoles?',
-      'Is it an action game?',
-      'Does it have multiplayer mode?',
-      'Is it from a Japanese developer?',
-      'Is it part of a series?'
-    ],
+  // Big pool of questions, each question tagged with topics for dynamic picking
+  const questionsPool = {
     Characters: [
-      'Is the character from a movie?',
-      'Is it a villain?',
-      'Is it from a video game?',
-      'Is it human?',
-      'Is it from a cartoon?'
-    ],
-    Animals: [
-      'Is it a mammal?',
-      'Is it domesticated?',
-      'Is it bigger than a dog?',
-      'Is it commonly found in zoos?',
-      'Can it fly?'
-    ],
-    Places: [
-      'Is it a city?',
-      'Is it in Europe?',
-      'Is it a capital city?',
-      'Is it a famous tourist destination?',
-      'Is it known for historical landmarks?'
-    ],
-    Objects: [
-      'Can you hold it in your hand?',
-      'Is it electronic?',
-      'Is it used daily?',
-      'Is it found in the kitchen?',
-      'Is it made of metal?'
-    ]
-  };
-
-  // Example guesses per category (expandable in future)
-  const guessesDB = {
-    Songs: ['Shape of You', 'Despacito', 'Bohemian Rhapsody', 'Gangnam Style', 'Imagine'],
-    Movies: ['Spirited Away', 'The Avengers', 'Titanic', 'Frozen', 'Inception'],
-    Games: ['Mario Kart', 'FIFA', 'Minecraft', 'The Legend of Zelda', 'Fortnite'],
-    Characters: ['Darth Vader', 'Harry Potter', 'Lara Croft', 'Mickey Mouse', 'Sherlock Holmes'],
-    Animals: ['Elephant', 'Dog', 'Eagle', 'Dolphin', 'Lion'],
-    Places: ['Paris', 'New York', 'Tokyo', 'London', 'Rome'],
-    Objects: ['Smartphone', 'Toothbrush', 'Laptop', 'Backpack', 'Watch']
-  };
-
-  let currentCategory = '';
-  let currentQuestionIndex = 0;
-  let guessesMade = 0;
-  const maxGuesses = 3;
-  let points = 0;
-  let gameActive = false;
-  let usedGuesses = new Set();
-
-  function resetAnswerButtons() {
-    answerButtons.forEach(btn => {
-      btn.disabled = false;
-      btn.classList.remove('disabled');
-      btn.setAttribute('aria-pressed', 'false');
-    });
-  }
-
-  function disableAnswerButtons() {
-    answerButtons.forEach(btn => {
-      btn.disabled = true;
-      btn.classList.add('disabled');
-      btn.setAttribute('aria-pressed', 'false');
-    });
-  }
-
-  function startGame() {
-    currentCategory = categorySelect.value;
-    if (!currentCategory) {
-      alert('Please select a category!');
-      return;
-    }
-    startScreen.classList.add('hidden');
-    gameScreen.classList.remove('hidden');
-    currentQuestionIndex = 0;
-    guessesMade = 0;
-    points = 0;
-    usedGuesses.clear();
-    gameActive = true;
-    messageEl.textContent = `Think of a ${currentCategory}. I will try to guess it by asking questions. Ready?`;
-    guessSection.textContent = '';
-    nextRoundBtn.classList.add('hidden');
-    scoreboard.textContent = `Points: ${points}`;
-    resetAnswerButtons();
-    setTimeout(() => askQuestion(), 1500);
-  }
-
-  function askQuestion() {
-    if (!gameActive) return;
-    if (currentQuestionIndex < questionsDB[currentCategory].length) {
-      messageEl.textContent = questionsDB[currentCategory][currentQuestionIndex];
-      guessSection.textContent = '';
-      resetAnswerButtons();
-    } else {
-      makeGuess();
-    }
-  }
-
-  function makeGuess() {
-    if (!gameActive) return;
-    disableAnswerButtons();
-    if (guessesMade >= maxGuesses) {
-      messageEl.textContent = `I couldn't guess it! You win! 🎉`;
-      guessSection.textContent = '';
-      gameActive = false;
-      points += 2; // reward player
-      scoreboard.textContent = `Points: ${points}`;
-      nextRoundBtn.classList.remove('hidden');
-      return;
-    }
-    // pick a guess that hasn't been tried yet
-    let possibleGuesses = guessesDB[currentCategory].filter(g => !usedGuesses.has(g));
-    if (possibleGuesses.length === 0) {
-      messageEl.textContent = `I ran out of guesses! You win! 🎉`;
-      gameActive = false;
-      nextRoundBtn.classList.remove('hidden');
-      points += 2;
-      scoreboard.textContent = `Points: ${points}`;
-      return;
-    }
-    let guess = possibleGuesses[Math.floor(Math.random() * possibleGuesses.length)];
-    usedGuesses.add(guess);
-    guessesMade++;
-    messageEl.textContent = `Is it "${guess}"?`;
-    guessSection.innerHTML = `
-      <button id="correct-btn" class="answer-btn">Yes, you got it!</button>
-      <button id="wrong-btn" class="answer-btn">No, try again</button>
-    `;
-    document.getElementById('correct-btn').addEventListener('click', () => {
-      points++;
-      scoreboard.textContent = `Points: ${points}`;
-      messageEl.textContent = `Yay! I guessed your ${currentCategory}! 🎉`;
-      guessSection.textContent = '';
-      gameActive = false;
-      nextRoundBtn.classList.remove('hidden');
-      disableAnswerButtons();
-    });
-    document.getElementById('wrong-btn').addEventListener('click', () => {
-      currentQuestionIndex = 0; // reset questions for next round
-      askQuestion();
-    });
-  }
-
-  function onAnswer(answer) {
-    if (!gameActive) return;
-    disableAnswerButtons();
-    // For now, the game doesn't use the answers to narrow guesses (could be improved later)
-    currentQuestionIndex++;
-    setTimeout(() => askQuestion(), 800);
-  }
-
-  answerButtons.forEach(btn => {
-    btn.addEventListener('click', () => {
-      onAnswer(btn.dataset.answer);
-    });
-  });
-
-  startBtn.addEventListener('click', startGame);
-
-  nextRoundBtn.addEventListener('click', () => {
-    startScreen.classList.remove('hidden');
-    gameScreen.classList.add('hidden');
-    categorySelect.value = '';
-    messageEl.textContent = '';
-    guessSection.textContent = '';
-    nextRoundBtn.classList.add('hidden');
-  });
-})();
-</script>
-</body>
-</html>
+      {q: 'Is your character from a movie or TV show?', tags: ['media']},
+     
