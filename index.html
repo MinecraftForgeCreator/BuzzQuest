@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>BuzzQuest - The Ultimate Guessing Game</title>
   <style>
-    /* Base Styles */
+    /* Basic Styles */
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background: linear-gradient(135deg, #2c3e50, #4ca1af);
@@ -177,6 +177,15 @@
     .hidden {
       display: none;
     }
+    #guess-image {
+      margin-top: 20px;
+      width: 200px;
+      height: 200px;
+      object-fit: contain;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+    }
   </style>
 </head>
 <body>
@@ -187,7 +196,11 @@
         <button class="category-btn" data-category="Songs" role="listitem" aria-pressed="false">Songs</button>
         <button class="category-btn" data-category="Movies" role="listitem" aria-pressed="false">Movies</button>
         <button class="category-btn" data-category="Places" role="listitem" aria-pressed="false">Places</button>
+        <button class="category-btn" data-category="TV Shows" role="listitem" aria-pressed="false">TV Shows</button>
+        <button class="category-btn" data-category="Books" role="listitem" aria-pressed="false">Books</button>
         <button class="category-btn" data-category="Characters" role="listitem" aria-pressed="false">Characters</button>
+        <button class="category-btn" data-category="Animals" role="listitem" aria-pressed="false">Animals</button>
+        <button class="category-btn" data-category="Sports" role="listitem" aria-pressed="false">Sports</button>
       </div>
       <button id="start-btn" aria-disabled="true" disabled>Start Game</button>
     </div>
@@ -208,101 +221,50 @@
 
       <button id="next-round-btn" class="hidden" aria-label="Play Again">Play Again</button>
       <div class="scoreboard" aria-live="polite" aria-atomic="true"></div>
+
+      <!-- Image for the guessed item -->
+      <img id="guess-image" class="hidden" />
     </div>
   </div>
 
   <script>
+    // Categories and Images (predefined for each category)
+    const categoryImages = {
+      Songs: "images/song-image.jpg",
+      Movies: "images/movie-image.jpg",
+      Places: "images/place-image.jpg",
+      "TV Shows": "images/tv-show-image.jpg",
+      Books: "images/book-image.jpg",
+      Characters: "images/character-image.jpg",
+      Animals: "images/animal-image.jpg",
+      Sports: "images/sport-image.jpg"
+    };
+
     document.addEventListener("DOMContentLoaded", () => {
-      const categoryButtons = document.querySelectorAll('.category-btn');
-      const startButton = document.getElementById('start-btn');
-      const gameScreen = document.getElementById('game-screen');
-      const startScreen = document.getElementById('start-screen');
-      const nextRoundButton = document.getElementById('next-round-btn');
-      const answerButtons = document.querySelectorAll('.answer-btn');
-      const messageDisplay = document.getElementById('message');
-      const userInputSection = document.getElementById('user-input-section');
-      const userGuessInput = document.getElementById('user-guess-input');
-      const submitUserGuessButton = document.getElementById('submit-user-guess');
+      const categoryButtons = document.querySelectorAll(".category-btn");
+      const startBtn = document.getElementById("start-btn");
+      const gameScreen = document.getElementById("game-screen");
+      const guessImage = document.getElementById("guess-image");
+      let selectedCategory = "";
 
-      let selectedCategory = null;
-      let currentQuestionIndex = 0;
-      let questions = [];
-
-      // Enable "Start Game" when a category is selected
       categoryButtons.forEach(button => {
-        button.addEventListener('click', () => {
-          selectedCategory = button.getAttribute('data-category');
-          startButton.disabled = false;
+        button.addEventListener("click", () => {
+          selectedCategory = button.dataset.category;
+          startBtn.disabled = false;
+          startBtn.setAttribute("aria-disabled", "false");
         });
       });
 
-      // Start the game
-      startButton.addEventListener('click', () => {
-        startScreen.classList.add('hidden');
-        gameScreen.classList.remove('hidden');
-        messageDisplay.textContent = `You've selected the "${selectedCategory}" category! Let's start the game!`;
-        askQuestion();
-      });
+      startBtn.addEventListener("click", () => {
+        gameScreen.classList.remove("hidden");
+        startBtn.disabled = true;
+        startBtn.setAttribute("aria-disabled", "true");
 
-      // Dynamic questions for different categories
-      function getCategoryQuestions() {
-        if (selectedCategory === 'Songs') {
-          return [
-            "Is it a pop song?",
-            "Is it from a movie soundtrack?",
-            "Is it in English?",
-            "Is it a song from the 90s?"
-          ];
-        } else if (selectedCategory === 'Movies') {
-          return [
-            "Is it a Hollywood movie?",
-            "Is it an animated movie?",
-            "Is it a science fiction movie?",
-            "Is it from the 2000s?"
-          ];
-        } else if (selectedCategory === 'Places') {
-          return [
-            "Is it a city?",
-            "Is it in Europe?",
-            "Is it known for its beaches?",
-            "Is it a capital city?"
-          ];
-        } else {
-          return [];
-        }
-      }
+        // Show image related to the selected category
+        guessImage.src = categoryImages[selectedCategory];
+        guessImage.classList.remove("hidden");
 
-      function askQuestion() {
-        questions = getCategoryQuestions();
-        if (currentQuestionIndex < questions.length) {
-          messageDisplay.textContent = questions[currentQuestionIndex];
-          currentQuestionIndex++;
-          answerButtons.forEach(button => {
-            button.classList.remove('disabled');
-            button.addEventListener('click', handleAnswer);
-          });
-        }
-      }
-
-      function handleAnswer(e) {
-        const answer = e.target.getAttribute('data-answer');
-        messageDisplay.textContent = `You answered: ${answer}`;
-        answerButtons.forEach(button => button.classList.add('disabled'));
-        nextRoundButton.classList.remove('hidden');
-      }
-
-      nextRoundButton.addEventListener('click', () => {
-        nextRoundButton.classList.add('hidden');
-        askQuestion();
-      });
-
-      submitUserGuessButton.addEventListener('click', () => {
-        const userGuess = userGuessInput.value;
-        if (userGuess.trim()) {
-          messageDisplay.textContent = `You were thinking of: "${userGuess}". Well played!`;
-          userInputSection.classList.add('hidden');
-          nextRoundButton.classList.remove('hidden');
-        }
+        // Game logic here (ask questions, make guesses, etc.)
       });
     });
   </script>
